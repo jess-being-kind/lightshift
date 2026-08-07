@@ -1,0 +1,2 @@
+[console_scripts]
+lumenctl = lightshift.cli:main

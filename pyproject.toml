@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lightshift"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Linux-driven smart-light discovery and scene control."
+dependencies = []
+
+[dependency-groups]
+test = ["pytest"]
+
+[project.scripts]
+lumenctl = "lightshift.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
