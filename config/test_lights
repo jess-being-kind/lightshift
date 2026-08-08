@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+source ../.venv/get_
+
+curl -k -X PUT \
+  "https://${BRIDGE_IP}/clip/v2/resource/light/a0a4f1c6-932c-477d-a752-9ab4df7a8656" \
+  -H "hue-application-key: ${HUE_APP_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"dimming":{"brightness":50.0}}'

@@ -10,8 +10,8 @@ import logging
 import datetime
 from dataclasses import dataclass
 import time
-from typing import
 from pathlib import Path
+import lightshift
 
 # ======================================================================================
 # ▶▶▶ S0. Dependency utilities, globals, logger
@@ -34,14 +34,15 @@ def ensure_directory(path: Path) -> int:
         return 0
 
 def ensure_file(file: Path, config: Config) -> Path:
-
     ensure_directory(file.parent)
-
     if file.exists():
         log.info(f"File {file} already exists")
         if config.force:
             log.info(f"--force selected - overwriting file {file}")
-            file.rename(file.name + ".bak" + RUN_ID)
+            backup = file.with_name(
+            f"{file.name}.bak.{RUN_ID}"
+            )
+            file.rename(backup)
             file.touch(exist_ok=False)
             return file
         else:
@@ -56,7 +57,7 @@ def ensure_file(file: Path, config: Config) -> Path:
 # ======================================================================================
 
 # script metadata
-TIME_START_S = str(time.time())
+TIME_START_S = time.time()
 RUN_ID = utc_now()
 AUTHOR = "V Halcyon"
 VERSION = "v0_1_0"
@@ -64,7 +65,7 @@ DIR_OUTPUT = Path("output")
 
 @dataclass(frozen=True)
 class Metadata:
-    start_time: str = TIME_START_S
+    start_time: float = TIME_START_S
     run_id: str = RUN_ID
     author: str = AUTHOR
     version: str = VERSION
@@ -73,8 +74,8 @@ class Metadata:
 @dataclass(frozen=True)
 class Config:
     version: str
-    verbose: bool | None
-    quiet: bool | None
+    verbose: bool = False
+    quiet: bool = False
     apply: bool = False
     force: bool = False
 
@@ -93,6 +94,17 @@ def build_parser() -> argparse.ArgumentParser:
         prog="lumenctl",
         description="Discover & control Lightshift-compatible devices"
     )
+
+    verbosity = parser.add_mutually_exclusive_group()
+    verbosity.add_argument(
+        "--verbose",
+        action="store_true"
+                           )
+    verbosity.add_argument(
+        "--quiet",
+        action="store_true"
+    )
+
     parser.add_argument(
         "--version",
         action="version",
@@ -103,18 +115,6 @@ def build_parser() -> argparse.ArgumentParser:
             "--force",
             action="store_true",
             default=False,
-        )
-
-    parser.add_argument(
-            "--verbose",
-            action="store_true",
-            default=False,
-        )
-
-    parser.add_argument(
-            "--quiet",
-            action="store_true",
-            default=False
         )
 
     parser.add_argument(
@@ -167,6 +167,10 @@ def setup_logging(config: Config) -> logging.Logger:
     root_log = logging.getLogger()
     root_log.setLevel(logging.DEBUG)
 
+    for handler in root_log.handlers[:]:
+        root_log.removeHandler(handler)
+        handler.close()
+
     root_log.addHandler(console_handler)
     root_log.addHandler(file_handler)
 
@@ -201,6 +205,18 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     log.info("Lumen control online @: " + utc_now())
 
+    # Work w/ an ambiguous spoofed light:
+    log.debug("Entering dev environment...")
+
+    # Provider payload:
+
+    # Provider adapter:
+
+    # Normalized LightCapabilities & LightState:
+
+    # CommandCapabilities:
+
+    # Provider-specific write:
 
     # lumenctl entry point
 
