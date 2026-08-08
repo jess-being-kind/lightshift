@@ -90,7 +90,6 @@ class ColorMode(Enum):
     COLOR_TEMPERATURE = auto()
     BRIGHTNESS = auto()
 
-
 test_light_capabilities = LightCapabilities(
     temperature=True,
     color=True,
@@ -114,5 +113,3 @@ test_light = LightDevice(
     handle="test_device", manufacturer="philips", capabilities=test_light_capabilities,
     state = test_light_state,
 )
-
-print(test_light)
